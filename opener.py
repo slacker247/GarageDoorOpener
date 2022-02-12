@@ -3,10 +3,12 @@ import numpy as np
 import time
 import gpiozero
 
-ser = serial.Serial("/dev/ttyS0", 115200,timeout=0) # mini UART serial device
 relay = gpiozero.DigitalOutputDevice(pin=17)
 
 def read_tfluna_data():
+    ser = serial.Serial("/dev/ttyS0", 115200,timeout=0) # mini UART serial device
+    if ser.isOpen() == False:
+        ser.open() # open serial port if not open
     while True:
         counter = ser.in_waiting # count the number of bytes of the serial port
         if counter > 8:
@@ -19,14 +21,12 @@ def read_tfluna_data():
                 temperature = bytes_serial[6] + bytes_serial[7]*256 # temp in next two bytes
                 temperature = (temperature/8.0) - 256.0 # temp scaling and offset
                 return distance/100.0,strength,temperature
-
-if ser.isOpen() == False:
-    ser.open() # open serial port if not open
+    ser.close() # close serial port
 
 distance,strength,temperature = read_tfluna_data() # read values
 lastDist = distance
 state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
-while ser.isOpen():
+while True:
     distance,strength,temperature = read_tfluna_data() # read values
     print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
                 format(distance,strength,temperature)) # print sample data
@@ -67,4 +67,3 @@ while ser.isOpen():
     time.sleep(5)
     pass
 
-ser.close() # close serial port
