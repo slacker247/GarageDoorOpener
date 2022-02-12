@@ -25,7 +25,7 @@ if ser.isOpen() == False:
 
 lastDist = 0.0
 state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
-while ser.open():
+while ser.isOpen():
     distance,strength,temperature = read_tfluna_data() # read values
     if distance - lastDist == 0 and state == 2:
         # cycle open
