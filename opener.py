@@ -1,4 +1,4 @@
-import serial,time
+import serial
 import numpy as np
 import time
 import gpiozero
@@ -23,12 +23,16 @@ def read_tfluna_data():
 if ser.isOpen() == False:
     ser.open() # open serial port if not open
 
-lastDist = 0.0
+distance,strength,temperature = read_tfluna_data() # read values
+lastDist = distance
 state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while ser.isOpen():
     distance,strength,temperature = read_tfluna_data() # read values
+    print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+                format(distance,strength,temperature)) # print sample data
     if distance - lastDist == 0 and state == 2:
         # cycle open
+        print("Cycle open")
         # close door
         relay.on()
         time.sleep(0.14)
@@ -60,8 +64,6 @@ while ser.isOpen():
         state = 3
         print("State: open")
         lastDist = distance
-    print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
-                format(distance,strength,temperature)) # print sample data
     time.sleep(5)
     pass
 
