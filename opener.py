@@ -25,19 +25,20 @@ def read_tfluna_data():
 
 distance,strength,temperature = read_tfluna_data() # read values
 lastDist = distance
-err_margin = 0
+err_margin = 0 # 0.06
+d_margin = 0.06
 lastState = 0
 state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while True:
     lastState = state
     distance,strength,temperature = read_tfluna_data() # read values
-    if not distance - lastDist == 0:
+    delta = abs(distance - lastDist)
+    if delta > err_margin:
+        err_margin = delta
+    if delta > d_margin:
         # print only if it's changed
         print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
                 format(distance,strength,temperature)) # print sample data
-        delta = abs(distance - lastDist)
-        if delta > err_margin:
-            err_margin = delta
         print(f"Margin of error: {err_margin}")
     if distance - lastDist == 0 and state == 2:
         # cycle open
@@ -57,20 +58,20 @@ while True:
         time.sleep(0.14)
         relay.off()
         pass
-    if distance > 1.58:
+    if distance > (1.6 - d_margin):
         state = 1
         if not lastState == state:
             print("State: closed")
         lastDist = distance
-    if lastDist - distance > 0:
+    if lastDist - distance > d_margin:
         state = 2
         print("State: opening")
         lastDist = distance
-    if distance - lastDist > 0:
+    if distance - lastDist > d_margin:
         state = 4
         print("State: closing")
         lastDist = distance
-    if distance > 0 and distance < 0.6:
+    if distance < (0 + d_margin):
         state = 3
         print("State: open")
         lastDist = distance
