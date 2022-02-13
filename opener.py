@@ -25,8 +25,10 @@ def read_tfluna_data():
 
 distance,strength,temperature = read_tfluna_data() # read values
 lastDist = distance
+lastState = 0
 state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while True:
+    lastState = state
     distance,strength,temperature = read_tfluna_data() # read values
     if not distance - lastDist == 0:
         # print only if it's changed
@@ -50,9 +52,10 @@ while True:
         time.sleep(0.14)
         relay.off()
         pass
-    if distance > 2.72:
+    if distance > 1.58:
         state = 1
-        print("State: closed")
+        if not lastState == state:
+            print("State: closed")
         lastDist = distance
     if lastDist - distance > 0:
         state = 2
