@@ -28,7 +28,9 @@ lastDist = distance
 state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while True:
     distance,strength,temperature = read_tfluna_data() # read values
-    print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+    if not distance - lastDist == 0:
+        # print only if it's changed
+        print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
                 format(distance,strength,temperature)) # print sample data
     if distance - lastDist == 0 and state == 2:
         # cycle open
@@ -48,7 +50,7 @@ while True:
         time.sleep(0.14)
         relay.off()
         pass
-    if distance > 2 and distance < 3:
+    if distance > 2.72:
         state = 1
         print("State: closed")
         lastDist = distance
