@@ -29,12 +29,13 @@ print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperatu
 lastDist = distance
 err_margin = 0 # 0.06
 d_margin = 0.06
+delta = 0
 lastState = 0
 state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while True:
     lastState = state
     distance,strength,temperature = read_tfluna_data() # read values
-    delta = abs(distance - lastDist)
+    delta += abs(distance - lastDist)
     if delta > err_margin:
         err_margin = delta
     if delta > d_margin:
@@ -60,24 +61,28 @@ while True:
         time.sleep(0.14)
         relay.off()
         pass
-    if distance > (1.6 - d_margin):
+    if distance > (2.54 - d_margin):
         state = 1
         if not lastState == state:
             print("State: closed")
         lastDist = distance
+        delta = 0
     if lastDist - distance > d_margin:
         state = 2
         print("State: opening")
         lastDist = distance
+        delta = 0
     if distance - lastDist > d_margin:
         state = 4
         print("State: closing")
         lastDist = distance
+        delta = 0
     if distance < (0.38 + d_margin):
         state = 3
         if not lastState == state:
             print("State: open")
         lastDist = distance
+        delta = 0
     if not state == lastState:
         err_margin = 0
     time.sleep(0.5)
