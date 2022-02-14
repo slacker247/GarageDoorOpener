@@ -42,56 +42,57 @@ state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while True:
     lastState = state
     distance,strength,temperature = read_tfluna_data() # read values
-    delta += abs(distance - lastDist)
-    if delta > err_margin:
-        err_margin = delta
-    if delta > d_margin:
-        # print only if it's changed
-        print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
-                format(distance,strength,temperature)) # print sample data
-        print(f"Margin of error: {err_margin}")
-    if delta < d_margin and state == 2:
-        # cycle open
-        print("Cycle open")
-        # close door
-        relay.on()
-        time.sleep(0.14)
-        relay.off()
-        # stop close
-        time.sleep(1)
-        relay.on()
-        time.sleep(0.14)
-        relay.off()
-        # open door
-        time.sleep(1)
-        relay.on()
-        time.sleep(0.14)
-        relay.off()
-        pass
-    if distance > (2.54 - d_margin):
-        state = 1
-        if not lastState == state:
-            print("State: closed")
-        lastDist = distance
-        delta = 0
-    if lastDist - distance > d_margin:
-        state = 2
-        print("State: opening")
-        lastDist = distance
-        delta = 0
-    if distance - lastDist > d_margin:
-        state = 4
-        print("State: closing")
-        lastDist = distance
-        delta = 0
-    if distance < (0.38 + d_margin):
-        state = 3
-        if not lastState == state:
-            print("State: open")
-        lastDist = distance
-        delta = 0
-    if not state == lastState:
-        err_margin = 0
+    if distance > 0:
+        delta += abs(distance - lastDist)
+        if delta > err_margin:
+            err_margin = delta
+        if delta > d_margin:
+            # print only if it's changed
+            print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+                    format(distance,strength,temperature)) # print sample data
+            print(f"Margin of error: {err_margin}")
+        if delta < d_margin and state == 2:
+            # cycle open
+            print("Cycle open")
+            # close door
+            relay.on()
+            time.sleep(0.14)
+            relay.off()
+            # stop close
+            time.sleep(1)
+            relay.on()
+            time.sleep(0.14)
+            relay.off()
+            # open door
+            time.sleep(1)
+            relay.on()
+            time.sleep(0.14)
+            relay.off()
+            pass
+        if distance > (2.54 - d_margin):
+            state = 1
+            if not lastState == state:
+                print("State: closed")
+            lastDist = distance
+            delta = 0
+        if lastDist - distance > d_margin:
+            state = 2
+            print("State: opening")
+            lastDist = distance
+            delta = 0
+        if distance - lastDist > d_margin:
+            state = 4
+            print("State: closing")
+            lastDist = distance
+            delta = 0
+        if distance < (0.38 + d_margin):
+            state = 3
+            if not lastState == state:
+                print("State: open")
+            lastDist = distance
+            delta = 0
+        if not state == lastState:
+            err_margin = 0
     time.sleep(0.5)
     pass
 
