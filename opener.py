@@ -32,6 +32,9 @@ state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while True:
     lastState = state
     distance,strength,temperature = read_tfluna_data() # read values
+    if True:
+        print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+                format(distance,strength,temperature)) # print sample data
     delta = abs(distance - lastDist)
     if delta > err_margin:
         err_margin = delta
@@ -71,7 +74,7 @@ while True:
         state = 4
         print("State: closing")
         lastDist = distance
-    if distance < (0 + d_margin):
+    if distance < (0.38 + d_margin):
         state = 3
         print("State: open")
         lastDist = distance
