@@ -24,6 +24,8 @@ def read_tfluna_data():
     ser.close() # close serial port
 
 distance,strength,temperature = read_tfluna_data() # read values
+print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+        format(distance,strength,temperature)) # print sample data
 lastDist = distance
 err_margin = 0 # 0.06
 d_margin = 0.06
@@ -32,9 +34,6 @@ state = 0 # 0 unk, 1 closed, 2 opening, 3 open, 4 closing
 while True:
     lastState = state
     distance,strength,temperature = read_tfluna_data() # read values
-    if True:
-        print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
-                format(distance,strength,temperature)) # print sample data
     delta = abs(distance - lastDist)
     if delta > err_margin:
         err_margin = delta
@@ -80,6 +79,6 @@ while True:
         lastDist = distance
     if not state == lastState:
         err_margin = 0
-    time.sleep(5)
+    time.sleep(0.5)
     pass
 
