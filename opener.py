@@ -43,7 +43,7 @@ while True:
         print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
                 format(distance,strength,temperature)) # print sample data
         print(f"Margin of error: {err_margin}")
-    if delta == 0 and state == 2:
+    if delta < d_margin and state == 2:
         # cycle open
         print("Cycle open")
         # close door
