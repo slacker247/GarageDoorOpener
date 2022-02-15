@@ -48,9 +48,10 @@ while True:
             err_margin = delta
         if delta > d_margin:
             # print only if it's changed
-            print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
-                    format(distance,strength,temperature)) # print sample data
-            print(f"Margin of error: {err_margin}")
+            print(f"Distance: {distance:2.2f} m")
+            #print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+            #        format(distance,strength,temperature)) # print sample data
+            #print(f"Margin of error: {err_margin}")
         if delta < d_margin and state == 2:
             # cycle open
             print("Cycle open")
@@ -85,7 +86,7 @@ while True:
             print("State: closing")
             lastDist = distance
             delta = 0
-        if distance < (0.38 + d_margin):
+        if distance < (0.45 + d_margin):
             state = 3
             if not lastState == state:
                 print("State: open")
