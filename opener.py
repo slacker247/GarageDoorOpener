@@ -2,6 +2,7 @@ import serial
 import numpy as np
 import time
 import gpiozero
+import datetime
 
 relay = gpiozero.DigitalOutputDevice(pin=17)
 
@@ -48,7 +49,7 @@ while True:
             err_margin = delta
         if delta > d_margin:
             # print only if it's changed
-            print(f"Distance: {distance:2.2f} m")
+            print(f"{datetime.datetime.now()} - Distance: {distance:2.2f} m")
             #print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
             #        format(distance,strength,temperature)) # print sample data
             #print(f"Margin of error: {err_margin}")
